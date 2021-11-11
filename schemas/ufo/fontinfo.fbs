@@ -1,0 +1,142 @@
+namespace FlatFont.Ufo;
+
+/// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/
+table FontInfo {
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-identification-information
+  familyName: string;
+  styleName: string;
+  styleMapFamilyName: string;
+  styleMapStyleName: string;
+  versionMajor: int;
+  versionMinor: int;
+  year: int;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-legal-information
+  copyright: string;
+  trademark: string;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-dimension-information
+  unitsPerEm: float;
+  descender: float;
+  xHeight: float;
+  capHeight: float;
+  ascender: float;
+  italicAngle: float;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-miscellaneous-information
+  note: string;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#gasp-range-record-format
+  openTypeGaspRangeRecords: dictList;
+
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-head-table-fields
+  openTypeHeadCreated: string;
+  openTypeHeadLowestRecPPEM: int;
+  openTypeHeadFlags: integerList;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-hhea-table-fields
+  openTypeHheaAscender: int;
+  openTypeHheaDescender: int;
+  openTypeHheaLineGap: int;
+  openTypeHheaCaretSlopeRise: int;
+  openTypeHheaCaretSlopeRun: int;
+  openTypeHheaCaretOffset: int;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-name-table-fields
+  openTypeNameDesigner: string;
+  openTypeNameDesignerURL: string;
+  openTypeNameManufacturer: string;
+  openTypeNameManufacturerURL: string;
+  openTypeNameLicense: string;
+  openTypeNameLicenseURL: string;
+  openTypeNameVersion: string;
+  openTypeNameUniqueID: string;
+  openTypeNameDescription: string;
+  openTypeNamePreferredFamilyName: string;
+  openTypeNamePreferredSubfamilyName: string;
+  openTypeNameCompatibleFullName: string;
+  openTypeNameSampleText: string;
+  openTypeNameWWSFamilyName: string;
+  openTypeNameWWSSubfamilyName: string;
+  openTypeNameRecords: dictList;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-os2-table-fields
+  openTypeOS2WidthClass: int;
+  openTypeOS2WeightClass: int;
+  openTypeOS2Selection: integerList;
+  openTypeOS2VendorID: string;
+  openTypeOS2Panose: integerList;
+  openTypeOS2FamilyClass: integerList;
+  openTypeOS2UnicodeRanges: integerList;
+  openTypeOS2CodePageRanges: integerList;
+  openTypeOS2TypoAscender: int;
+  openTypeOS2TypoDescender: int;
+  openTypeOS2TypoLineGap: int;
+  openTypeOS2WinAscent: int;
+  openTypeOS2WinDescent: int;
+  openTypeOS2SubscriptXSize: int;
+  openTypeOS2SubscriptYSize: int;
+  openTypeOS2SubscriptXOffset: int;
+  openTypeOS2SubscriptYOffset: int;
+  openTypeOS2SuperscriptXSize: int;
+  openTypeOS2SuperscriptYSize: int;
+  openTypeOS2SuperscriptXOffset: int;
+  openTypeOS2SuperscriptYOffset: int;
+  openTypeOS2StrikeoutSize: int;
+  openTypeOS2StrikeoutPosition: int;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-vhea-table-fields
+  openTypeVheaVertTypoAscender: float;
+  openTypeVheaVertTypoDescender: float;
+  openTypeVheaVertTypoLineGap: float;
+  openTypeVheaCaretSlopeRise: int;
+  openTypeVheaCaretSlopeRun: int;
+  openTypeVheaCaretOffset: int;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#postscript-specific-data
+  postscriptFontName: string;
+  postscriptFullName: string;
+  postscriptSlantAngle: float;
+  postscriptUniqueID: int;
+  postscriptUnderlineThickness: float;
+  postscriptUnderlinePosition: float;
+  postscriptIsFixedPitch: bool;
+  postscriptBlueValues: integerList;
+  postscriptOtherBlues: integerList;
+  postscriptFamilyBlues: integerList;
+  postscriptFamilyOtherBlues: integerList;
+  postscriptStemSnapH: integerList;
+  postscriptStemSnapV: integerList;
+  postscriptBlueFuzz: float;
+  postscriptBlueShift: float;
+  postscriptBlueScale: float;
+  postscriptForceBold: bool;
+  postscriptDefaultWidthX: float;
+  postscriptNominalWidthX: float;
+  postscriptWeightName: string;
+  postscriptDefaultCharacter: string;
+  postscriptWindowsCharacterSet: int;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#macintosh-fond-resource-data
+  macintoshFONDFamilyID: int;
+  macintoshFONDName: string;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#woff-data
+  woffMajorVersion: int;
+  woffMinorVersion: int;
+  woffMetadataUniqueID: dict;
+  woffMetadataVendor: dict;
+  woffMetadataCredits: dict;
+  woffMetadataDescription: dict;
+  woffMetadataLicense: dict;
+  woffMetadataCopyright: dict;
+  woffMetadataTrademark: dict;
+  woffMetadataLicensee: dict;
+  woffMetadataExtensions: list;
+
+  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#guidelines
+  guidelines: list;
+}
+
+root_type FontInfo;
