@@ -1,0 +1,10 @@
+namespace FlatFont;
+
+table FlatFont {
+  // https://unifiedfontobject.org/versions/ufo3/metainfo.plist/
+  creator: string;
+  format_version: ushort = 3;
+  format_version_minor: ushort = 0;
+}
+
+root_type FlatFont;

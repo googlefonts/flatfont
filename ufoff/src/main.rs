@@ -1,11 +1,21 @@
-use norad::Font;
-use std::ffi::OsStr;
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
 use std::env;
+use std::fs::File;
+use std::io::Write;
 
+use norad::Font;
 
-fn main() {
+// import the flatbuffers runtime library
+extern crate flatbuffers;
+ 
+// import the flatbuffer generated code
+#[allow(dead_code, unused_imports)]
+#[path = "./flatfont_generated.rs"]
+mod flatbuffer_generated;
+pub use flatbuffer_generated::flat_font::{FlatFont, FlatFontArgs};
+
+fn main() -> std::io::Result<()> {
     let args = Args::get_from_env_or_exit();
 
     let start = Instant::now();
@@ -18,13 +28,29 @@ fn main() {
 
     println!("loaded {} glyphs from {} in {}.", ufo.glyph_count(), font_name, time_str);
 
+    // Build a flat version
+    // https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html
+    let mut builder = flatbuffers::FlatBufferBuilder::with_capacity(1024);
+
+    let creator = ufo.meta.creator.map(|c| builder.create_string(&c));
+
+    let flat_font = FlatFont::create(&mut builder,
+        &FlatFontArgs {
+            creator: creator,
+            ..Default::default()
+        });
+    builder.finish(flat_font, None);
+
+    // write binary version
+    let buf = builder.finished_data(); 
+    let mut fout = File::create(args.outpath)?;
+    fout.write_all(buf)?;
+    Ok(())
 }
 
 fn seconds_str(duration: Duration) -> String {
     format!("{}.{}s", duration.as_secs(), duration.subsec_millis())
 }
-
-
 
 struct Args {
     path: PathBuf,
