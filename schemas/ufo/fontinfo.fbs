@@ -10,6 +10,7 @@ table FontInfo {
   styleMapStyleName: string;
   versionMajor: int;
   versionMinor: uint;
+  year: int (deprecated);
 
   /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-legal-information
   copyright: string;
