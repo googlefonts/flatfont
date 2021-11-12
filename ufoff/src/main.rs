@@ -6,16 +6,14 @@ use std::io::Write;
 
 use norad::Font;
 
-//use ufoff_macros::create_from_ufo;
-
 // import the flatbuffers runtime library
 extern crate flatbuffers;
  
 // import the flatbuffer generated code
 #[allow(dead_code, unused_imports)]
-#[path = "./flatfont_generated.rs"]
-mod flatbuffer_generated;
-pub use flatbuffer_generated::flat_font::{FlatFont, FlatFontArgs, MetaInfo, MetaInfoArgs};
+#[path = "./fontinfo_generated.rs"]
+mod fontinfo_generated;
+pub use fontinfo_generated::{FontInfo, FontInfoArgs};
 
 fn main() -> std::io::Result<()> {
     let args = Args::get_from_env_or_exit();
@@ -32,29 +30,20 @@ fn main() -> std::io::Result<()> {
 
     // Build a flat version
     // https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html
-    let mut mb = flatbuffers::FlatBufferBuilder::with_capacity(1024);
-
-    // WIP: I don't want to hand-write field copies damnit
-    //let mm = create_from_ufo!(mb, ufo.meta, MetaInfo);
 
     let mut builder = flatbuffers::FlatBufferBuilder::with_capacity(1024);
 
     let creator = ufo.meta.creator.map(|c| builder.create_string(&c));
 
-    let meta = MetaInfo::create(&mut builder,
-        &MetaInfoArgs {
-            creator: creator,
-            format_version: ufo.meta.format_version as u16,
-            format_version_minor: ufo.meta.format_version_minor,
+    let font_info = FontInfo::create(&mut builder,
+        &FontInfoArgs {
+            ascender: *ufo.font_info.ascender.expect("ascender") as f32,
+            capHeight: *ufo.font_info.cap_height.expect("cap_height") as f32,
+            // TODO: so very many more
             ..Default::default()
         });
 
-    let flat_font = FlatFont::create(&mut builder,
-        &FlatFontArgs {
-            meta: Some(meta),
-            ..Default::default()
-        });
-    builder.finish(flat_font, None);
+    builder.finish(font_info, None);
 
     // write binary version
     let buf = builder.finished_data(); 
@@ -65,6 +54,10 @@ fn main() -> std::io::Result<()> {
 
 fn seconds_str(duration: Duration) -> String {
     format!("{}.{}s", duration.as_secs(), duration.subsec_millis())
+}
+
+fn to_f32(v: f64) -> f32 {
+    return v as f32;
 }
 
 struct Args {
