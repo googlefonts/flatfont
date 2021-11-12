@@ -27,7 +27,7 @@ table FontInfo {
   note: string;
 
   /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#gasp-range-record-format
-  openTypeGaspRangeRecords: dictList;
+  openTypeGaspRangeRecords: [OpenTypeGaspRangeRecord];
 
   //// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-head-table-fields
   openTypeHeadCreated: string;
@@ -58,7 +58,7 @@ table FontInfo {
   openTypeNameSampleText: string;
   openTypeNameWWSFamilyName: string;
   openTypeNameWWSSubfamilyName: string;
-  openTypeNameRecords: dictList;
+  openTypeNameRecords: [OpenTypeNameRecord];
 
   /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-os2-table-fields
   openTypeOS2WidthClass: uint;
@@ -137,6 +137,21 @@ table FontInfo {
   /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#guidelines
   guidelines: [Guildeline];
 }
+
+
+table OpenTypeNameRecord {
+  nameID: uint16;
+  platformID: uint16;
+  encodingID: uint16;
+  languageID: uint16;
+  string: string;
+}
+
+table OpenTypeGaspRangeRecord {
+  rangeMaxPPEM: uint;
+  rangeGaspBehavior: [uint];
+}
+
 
 table WoffMetadataUniqueID {
   id: string (required);
@@ -219,6 +234,7 @@ table WoffMetadataExtensionValue {
   class: string;
 }
 
+
 table Guildeline {
   x: float;
   y: float;
@@ -228,8 +244,5 @@ table Guildeline {
   identifier: string;
 }
 
-table dictList {
-  // TODO
-}
 
 root_type FontInfo;
