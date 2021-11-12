@@ -12,6 +12,5 @@ flatc --json --raw-binary -o /tmp/json ../flatfont.fbs -- /tmp/oswald.bin
 ## Update generated code
 
 ```
-flatc --rust flatfont.fbs
-mv flatfont_generated.rs ufoff/src/
+flatc --rust -o ufoff/src flatfont.fbs 
 ```

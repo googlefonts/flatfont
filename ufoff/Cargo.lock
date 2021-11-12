@@ -246,6 +246,16 @@ version = "0.1.0"
 dependencies = [
  "flatbuffers",
  "norad",
+ "ufoff-macros",
+]
+
+[[package]]
+name = "ufoff-macros"
+version = "0.1.0"
+dependencies = [
+ "flatbuffers",
+ "quote",
+ "syn",
 ]
 
 [[package]]

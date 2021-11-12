@@ -6,6 +6,8 @@ use std::io::Write;
 
 use norad::Font;
 
+//use ufoff_macros::create_from_ufo;
+
 // import the flatbuffers runtime library
 extern crate flatbuffers;
  
@@ -13,7 +15,7 @@ extern crate flatbuffers;
 #[allow(dead_code, unused_imports)]
 #[path = "./flatfont_generated.rs"]
 mod flatbuffer_generated;
-pub use flatbuffer_generated::flat_font::{FlatFont, FlatFontArgs};
+pub use flatbuffer_generated::flat_font::{FlatFont, FlatFontArgs, MetaInfo, MetaInfoArgs};
 
 fn main() -> std::io::Result<()> {
     let args = Args::get_from_env_or_exit();
@@ -30,13 +32,26 @@ fn main() -> std::io::Result<()> {
 
     // Build a flat version
     // https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html
+    let mut mb = flatbuffers::FlatBufferBuilder::with_capacity(1024);
+
+    // WIP: I don't want to hand-write field copies damnit
+    //let mm = create_from_ufo!(mb, ufo.meta, MetaInfo);
+
     let mut builder = flatbuffers::FlatBufferBuilder::with_capacity(1024);
 
     let creator = ufo.meta.creator.map(|c| builder.create_string(&c));
 
+    let meta = MetaInfo::create(&mut builder,
+        &MetaInfoArgs {
+            creator: creator,
+            format_version: ufo.meta.format_version as u16,
+            format_version_minor: ufo.meta.format_version_minor,
+            ..Default::default()
+        });
+
     let flat_font = FlatFont::create(&mut builder,
         &FlatFontArgs {
-            creator: creator,
+            meta: Some(meta),
             ..Default::default()
         });
     builder.finish(flat_font, None);
