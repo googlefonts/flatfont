@@ -1,11 +1,15 @@
+
 extern crate proc_macro;
 use self::proc_macro::TokenStream;
 use quote::quote;
-use syn::parse::{Parse, ParseStream};
 use syn::{parse_macro_input, Data, DataStruct, DeriveInput, ExprField, Fields, Ident, Result, Token};
 
 // import the flatbuffers runtime library
 extern crate flatbuffers;
+
+trait LoadFromUFO {
+
+}
 
 // Can we use a proc macro to do the tiresome field:field nonsense?
 // Ref https://github.com/dtolnay/syn/issues/516
@@ -57,17 +61,26 @@ extern crate flatbuffers;
 
 // Take 2: slap derives onto the types from flatbuffers
 // https://github.com/dtolnay/syn/issues/516
+// https://blog.turbo.fish/proc-macro-simple-derive/
 #[proc_macro_derive(FromUFO)]
 pub fn derive_from_ufo(input_tokens: TokenStream) -> TokenStream {
-    println!("DERIVE FROM UFO");
-    // let input = parse_macro_input!(input_tokens as DeriveInput);
-    // let fields = match &input.data {
-    //     Data::Struct(DataStruct { fields: Fields::Named(fields), .. }) => &fields.named,
-    //     _ => panic!("expected a struct with named fields"),
-    // };
-    // TokenStream::from(quote! {
-    //     // Keep original struct
-    //     #input
-    // })
-    input_tokens
+    let input = parse_macro_input!(input_tokens as DeriveInput);
+    let struct_name = &input.ident;
+    let generics = &input.generics;
+
+    println!("FromUFO {:?}", struct_name);
+    let fields = match &input.data {
+        Data::Struct(DataStruct { fields: Fields::Named(fields), .. }) => &fields.named,
+        _ => panic!("expected a struct with named fields"),
+    };
+
+    for field in fields {
+        println!("  {:#?}", field);
+    }    
+
+    TokenStream::from(quote! {
+        impl #generics std::convert::From for #struct_name #generics {
+            // TODO a useful conversion
+        }
+    })
 }

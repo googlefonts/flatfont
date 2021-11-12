@@ -1,4 +1,4 @@
-namespace FlatFont.Ufo;
+//namespace FlatFont.Ufo;
 
 /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/
 table FontInfo {
