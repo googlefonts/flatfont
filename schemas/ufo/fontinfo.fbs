@@ -3,20 +3,19 @@ namespace FlatFont.Ufo;
 /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/
 table FontInfo {
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-identification-information
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-identification-information
   familyName: string;
   styleName: string;
   styleMapFamilyName: string;
   styleMapStyleName: string;
   versionMajor: int;
-  versionMinor: int;
-  year: int;
+  versionMinor: uint;
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-legal-information
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-legal-information
   copyright: string;
   trademark: string;
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-dimension-information
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-dimension-information
   unitsPerEm: float;
   descender: float;
   xHeight: float;
@@ -24,18 +23,18 @@ table FontInfo {
   ascender: float;
   italicAngle: float;
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-miscellaneous-information
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#generic-miscellaneous-information
   note: string;
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#gasp-range-record-format
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#gasp-range-record-format
   openTypeGaspRangeRecords: dictList;
 
-  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-head-table-fields
+  //// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-head-table-fields
   openTypeHeadCreated: string;
-  openTypeHeadLowestRecPPEM: int;
-  openTypeHeadFlags: integerList;
+  openTypeHeadLowestRecPPEM: uint;
+  openTypeHeadFlags: [uint];
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-hhea-table-fields
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-hhea-table-fields
   openTypeHheaAscender: int;
   openTypeHheaDescender: int;
   openTypeHheaLineGap: int;
@@ -43,7 +42,7 @@ table FontInfo {
   openTypeHheaCaretSlopeRun: int;
   openTypeHheaCaretOffset: int;
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-name-table-fields
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-name-table-fields
   openTypeNameDesigner: string;
   openTypeNameDesignerURL: string;
   openTypeNameManufacturer: string;
@@ -61,20 +60,20 @@ table FontInfo {
   openTypeNameWWSSubfamilyName: string;
   openTypeNameRecords: dictList;
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-os2-table-fields
-  openTypeOS2WidthClass: int;
-  openTypeOS2WeightClass: int;
-  openTypeOS2Selection: integerList;
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-os2-table-fields
+  openTypeOS2WidthClass: uint;
+  openTypeOS2WeightClass: uint;
+  openTypeOS2Selection: [uint];
   openTypeOS2VendorID: string;
-  openTypeOS2Panose: integerList;
-  openTypeOS2FamilyClass: integerList;
-  openTypeOS2UnicodeRanges: integerList;
-  openTypeOS2CodePageRanges: integerList;
+  openTypeOS2Panose: [uint];
+  openTypeOS2FamilyClass: [uint];
+  openTypeOS2UnicodeRanges: [uint];
+  openTypeOS2CodePageRanges: [uint];
   openTypeOS2TypoAscender: int;
   openTypeOS2TypoDescender: int;
   openTypeOS2TypoLineGap: int;
-  openTypeOS2WinAscent: int;
-  openTypeOS2WinDescent: int;
+  openTypeOS2WinAscent: uint;
+  openTypeOS2WinDescent: uint;
   openTypeOS2SubscriptXSize: int;
   openTypeOS2SubscriptYSize: int;
   openTypeOS2SubscriptXOffset: int;
@@ -86,7 +85,7 @@ table FontInfo {
   openTypeOS2StrikeoutSize: int;
   openTypeOS2StrikeoutPosition: int;
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-vhea-table-fields
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-vhea-table-fields
   openTypeVheaVertTypoAscender: float;
   openTypeVheaVertTypoDescender: float;
   openTypeVheaVertTypoLineGap: float;
@@ -94,7 +93,7 @@ table FontInfo {
   openTypeVheaCaretSlopeRun: int;
   openTypeVheaCaretOffset: int;
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#postscript-specific-data
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#postscript-specific-data
   postscriptFontName: string;
   postscriptFullName: string;
   postscriptSlantAngle: float;
@@ -102,12 +101,12 @@ table FontInfo {
   postscriptUnderlineThickness: float;
   postscriptUnderlinePosition: float;
   postscriptIsFixedPitch: bool;
-  postscriptBlueValues: integerList;
-  postscriptOtherBlues: integerList;
-  postscriptFamilyBlues: integerList;
-  postscriptFamilyOtherBlues: integerList;
-  postscriptStemSnapH: integerList;
-  postscriptStemSnapV: integerList;
+  postscriptBlueValues: [float];
+  postscriptOtherBlues: [float];
+  postscriptFamilyBlues: [float];
+  postscriptFamilyOtherBlues: [float];
+  postscriptStemSnapH: [float];
+  postscriptStemSnapV: [float];
   postscriptBlueFuzz: float;
   postscriptBlueShift: float;
   postscriptBlueScale: float;
@@ -118,25 +117,119 @@ table FontInfo {
   postscriptDefaultCharacter: string;
   postscriptWindowsCharacterSet: int;
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#macintosh-fond-resource-data
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#macintosh-fond-resource-data
   macintoshFONDFamilyID: int;
   macintoshFONDName: string;
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#woff-data
-  woffMajorVersion: int;
-  woffMinorVersion: int;
-  woffMetadataUniqueID: dict;
-  woffMetadataVendor: dict;
-  woffMetadataCredits: dict;
-  woffMetadataDescription: dict;
-  woffMetadataLicense: dict;
-  woffMetadataCopyright: dict;
-  woffMetadataTrademark: dict;
-  woffMetadataLicensee: dict;
-  woffMetadataExtensions: list;
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#woff-data
+  woffMajorVersion: uint;
+  woffMinorVersion: uint;
+  woffMetadataUniqueID: WoffMetadataUniqueID;
+  woffMetadataVendor: WoffMetadataVendor;
+  woffMetadataCredits: WoffMetadataCredits;
+  woffMetadataDescription: WoffMetadataDescription;
+  woffMetadataLicense: WoffMetadataLicense;
+  woffMetadataCopyright: WoffMetadataCopyright;
+  woffMetadataTrademark: WoffMetadataTrademark;
+  woffMetadataLicensee: WoffMetadataLicensee;
+  woffMetadataExtensions: [WoffMetadataExtension];
 
-  // https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#guidelines
-  guidelines: list;
+  /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#guidelines
+  guidelines: [Guildeline];
+}
+
+table WoffMetadataUniqueID {
+  id: string (required);
+}
+
+table WoffMetadataVendor {
+  name: string (required);
+  url: string;
+  dir: string;
+  class: string;
+}
+
+table WoffMetadataCredits {
+  credits: [WoffMetadataCredit];
+}
+
+table WoffMetadataCredit {
+  name: string (required);
+  url: string;
+  role: string;
+  dir: string;
+  class: string;
+}
+
+table WoffMetadataDescription {
+  url: string;
+  text: [WoffMetadataText];
+}
+
+table WoffMetadataLicense {
+  url: string;
+  id: string;
+  text: [WoffMetadataText];
+}
+
+table WoffMetadataCopyright {
+  text: [WoffMetadataText];
+}
+
+table WoffMetadataTrademark {
+  text: [WoffMetadataText];
+}
+
+table WoffMetadataLicensee {
+  name: string (required);
+  dir: string;
+  class: string;
+}
+
+table WoffMetadataText {
+  text: string (required);
+  language: string;
+  dir: string;
+  class: string;
+}
+
+table WoffMetadataExtension {
+  id: string;
+  names: [WoffMetadataExtensionName];
+  items: [WoffMetadataExtensionItem];
+}
+
+table WoffMetadataExtensionItem {
+  id: string;
+  names: [WoffMetadataExtensionName];
+  values: [WoffMetadataExtensionValue];
+}
+
+table WoffMetadataExtensionName {
+  text: string (required);
+  language: string;
+  dir: string;
+  class: string;
+}
+
+table WoffMetadataExtensionValue {
+  text: string (required);
+  language: string;
+  dir: string;
+  class: string;
+}
+
+table Guildeline {
+  x: float;
+  y: float;
+  angle: float;
+  name: string;
+  color: string;
+  identifier: string;
+}
+
+table dictList {
+  // TODO
 }
 
 root_type FontInfo;
