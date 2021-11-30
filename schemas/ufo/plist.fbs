@@ -1,0 +1,61 @@
+// https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/PropertyLists/
+namespace Plist;
+
+union Type {
+  Integer,
+  Real,
+  String,
+  Boolean,
+  Data,
+  Date,
+  Dict,
+  Array,
+}
+
+// can't have vectors of unions in python or rust (only c++) so I define a table
+// that contains the union
+table Plist {
+ value: Type (required);
+}
+
+// can't use struct because 'only tables can be union elements' in python flatbuffers
+table Integer {
+  value: int;
+}
+
+table Real {
+  value: float;
+}
+
+table String {
+  value: string (required);
+}
+
+table Boolean {
+  value: bool;
+}
+
+table Data {
+  value: [ubyte] (required);
+}
+
+// xml plist date conforms to a subset of ISO 8601:
+// YYYY '-' MM '-' DD 'T' HH ':' MM ':' SS 'Z'
+table Date {
+  value: string (required);
+}
+
+table Dict {
+  value: [DictItem] (required);
+}
+
+table DictItem {
+  key: string (required, key);
+  value: Plist (required);
+}
+
+table Array {
+ values: [Plist] (required);
+}
+
+root_type Plist;

@@ -1,0 +1,60 @@
+// we include fontinfo.fbs this because the Guideline table is already defined there
+include "fontinfo.fbs";
+include "plist.fbs";
+
+//namespace FlatFont.Ufo;
+
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/
+table Glyph {
+  name: string (required, key);
+  width: float;
+  height: float;
+  unicodes: [uint];
+  image: Image;
+  lib: Plist.Dict;
+  note: string;
+  anchors: [Anchor];
+  components: [Component];
+  contours: [Contour];
+  guidelines: [Guideline];
+}
+
+table Image {
+  fileName: string;
+  transformation: Transform;
+  color: string;
+}
+
+table Anchor {
+  x: float;
+  y: float;
+  name: string;
+  color: string;
+  identifier: string;
+}
+
+table Component {
+  baseGlyph: string;
+  transformation: Transform;
+  identifier: string;
+}
+
+table Contour {
+  points: [Point];
+  identifier: string;
+}
+
+table Point {
+  x: float;
+  y: float;
+  type: string;
+  smooth: bool;
+  name: string;
+  identifier: string;
+}
+
+struct Transform {
+  values: [float:6];
+}
+
+root_type Glyph;
