@@ -136,7 +136,7 @@ table FontInfo {
   woffMetadataExtensions: [WoffMetadataExtension];
 
   /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#guidelines
-  guidelines: [Guildeline];
+  guidelines: [Guideline];
 }
 
 
@@ -236,7 +236,7 @@ table WoffMetadataExtensionValue {
 }
 
 
-table Guildeline {
+table Guideline {
   x: float;
   y: float;
   angle: float;
