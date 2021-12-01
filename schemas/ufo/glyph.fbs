@@ -1,4 +1,4 @@
-include "base.fbs";  // for Guideline
+include "misc.fbs";  // for Guideline and Transform
 include "../plist.fbs";
 
 namespace FlatFont.Ufo;
@@ -55,15 +55,6 @@ table Point {
   smooth: bool;
   name: string;
   identifier: string;
-}
-
-table Transform {
-  xScale: float = 1;
-  xyScale: float = 0;
-  yxScale: float = 0;
-  yScale: float = 1;
-  xOffset: float = 0;
-  yOffset: float = 0;
 }
 
 root_type Glyph;

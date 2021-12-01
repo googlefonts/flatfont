@@ -1,4 +1,4 @@
-include "base.fbs";  // for Guideline
+include "misc.fbs";  // for Guideline
 
 namespace FlatFont.Ufo;
 
