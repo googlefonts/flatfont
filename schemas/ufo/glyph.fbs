@@ -57,8 +57,13 @@ table Point {
   identifier: string;
 }
 
-struct Transform {
-  values: [float:6];
+table Transform {
+  xScale: float = 1;
+  xyScale: float = 0;
+  yxScale: float = 0;
+  yScale: float = 1;
+  xOffset: float = 0;
+  yOffset: float = 0;
 }
 
 root_type Glyph;
