@@ -1,4 +1,4 @@
-//namespace FlatFont.Ufo;
+namespace FlatFont.Ufo;
 
 table Guideline {
   x: float;
