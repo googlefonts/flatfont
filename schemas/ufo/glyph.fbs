@@ -1,5 +1,4 @@
-// we include fontinfo.fbs this because the Guideline table is already defined there
-include "fontinfo.fbs";
+include "base.fbs";  // for Guideline
 include "plist.fbs";
 
 //namespace FlatFont.Ufo;
@@ -19,12 +18,14 @@ table Glyph {
   guidelines: [Guideline];
 }
 
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/#image
 table Image {
   fileName: string;
   transformation: Transform;
   color: string;
 }
 
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/#anchor
 table Anchor {
   x: float;
   y: float;
@@ -33,17 +34,20 @@ table Anchor {
   identifier: string;
 }
 
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/#component
 table Component {
   baseGlyph: string;
   transformation: Transform;
   identifier: string;
 }
 
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/#contour
 table Contour {
   points: [Point];
   identifier: string;
 }
 
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/#point
 table Point {
   x: float;
   y: float;
