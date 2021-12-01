@@ -1,0 +1,60 @@
+include "misc.fbs";  // for Guideline and Transform
+include "../plist.fbs";
+
+namespace FlatFont.Ufo;
+
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/
+table Glyph {
+  name: string (required, key);
+  width: float;
+  height: float;
+  unicodes: [uint];
+  image: Image;
+  lib: Plist.Dict;
+  note: string;
+  anchors: [Anchor];
+  components: [Component];
+  contours: [Contour];
+  guidelines: [Guideline];
+}
+
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/#image
+table Image {
+  fileName: string;
+  transformation: Transform;
+  color: string;
+}
+
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/#anchor
+table Anchor {
+  x: float;
+  y: float;
+  name: string;
+  color: string;
+  identifier: string;
+}
+
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/#component
+table Component {
+  baseGlyph: string;
+  transformation: Transform;
+  identifier: string;
+}
+
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/#contour
+table Contour {
+  points: [Point];
+  identifier: string;
+}
+
+/// https://unifiedfontobject.org/versions/ufo3/glyphs/glif/#point
+table Point {
+  x: float;
+  y: float;
+  type: string;
+  smooth: bool;
+  name: string;
+  identifier: string;
+}
+
+root_type Glyph;

@@ -11,9 +11,8 @@ extern crate flatbuffers;
  
 // import the flatbuffer generated code
 #[allow(dead_code, unused_imports)]
-#[path = "./fontinfo_generated.rs"]
-mod fontinfo_generated;
-pub use fontinfo_generated::{FontInfo, FontInfoArgs};
+mod flatbuffers_generated;
+pub use flatbuffers_generated::flat_font::ufo::{FontInfo, FontInfoArgs};
 
 fn main() -> std::io::Result<()> {
     let args = Args::get_from_env_or_exit();

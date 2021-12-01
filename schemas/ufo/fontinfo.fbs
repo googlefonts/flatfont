@@ -1,4 +1,6 @@
-//namespace FlatFont.Ufo;
+include "misc.fbs";  // for Guideline
+
+namespace FlatFont.Ufo;
 
 /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/
 table FontInfo {
@@ -233,16 +235,6 @@ table WoffMetadataExtensionValue {
   language: string;
   dir: string;
   class: string;
-}
-
-
-table Guideline {
-  x: float;
-  y: float;
-  angle: float;
-  name: string;
-  color: string;
-  identifier: string;
 }
 
 
