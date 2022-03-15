@@ -2,6 +2,8 @@ include "misc.fbs";  // for Guideline
 
 namespace FlatFont.Ufo;
 
+enum WidthClass : uint { ULTRA_CONDENSED = 1, EXTRA_CONDESED, CONDENSED,  SEMI_CONDENSED, NORMAL, SEMI_EXPANDED, EXPANDED, EXTRA_EXPANDED, ULTRA_EXPANDED = 9 } 
+
 /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/
 table FontInfo {
 
@@ -64,7 +66,7 @@ table FontInfo {
   openTypeNameRecords: [OpenTypeNameRecord];
 
   /// https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/#opentype-os2-table-fields
-  openTypeOS2WidthClass: uint;
+  openTypeOS2WidthClass: WidthClass = NORMAL;
   openTypeOS2WeightClass: uint;
   openTypeOS2Selection: [uint];
   openTypeOS2VendorID: string;
