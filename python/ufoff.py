@@ -56,6 +56,9 @@ def GetAttrReference(builder: flatbuffers.Builder, ufo: Font) -> dict:
             if type(attribute_value) == list:
                 if type(attribute_value[0]) in [int, float]: # have to discuss type conversions
                     attr_dict[attr] = BuildAttrVector(builder, attr, attribute_value)
+            
+            if type(attribute_value) == object:
+                pass
 
             # TODO other nested references
     
