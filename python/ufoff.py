@@ -2,6 +2,8 @@
 from ufoLib2 import Font
 import flatbuffers
 from FlatFont.Ufo import FontInfo
+from FlatFont.Ufo import OpenTypeNameRecord
+#from FlatFont.Ufo import 
 from enum import IntEnum
 
 SCALARS = [int, float, bool] # Other scalars needed # Enum needed
@@ -12,11 +14,19 @@ def Capital(string: str): # seek equivalent buit-in function
     return string[0].upper() + string[1:]
 
 def StartAttrVector(attr: str):
-    '''Simplifies calling buffer functions by returning a string representing the buffer function suitable for the "Getattr" function input'''
+    '''
+    Simplifies calling buffer functions
+    Returns a string representing the buffer function 
+    Suitable for the "Getattr" function input
+    '''
     return "Start" + Capital(attr) + "Vector"
 
 def AddAttr(attr: str): # how about make it a subclass to str, add a method with or without @property: attr.AddAttr or attr.StartAttrVector
-    '''Simplifies calling buffer functions by returning a string representing the buffer function suitable for the "Getattr" function input'''
+    '''
+    Simplifies calling buffer functions
+    Returns a string representing the buffer function 
+    Suitable for the "Getattr" function input
+    '''
     return "Add" + Capital(attr)
 
 def BuildAttrString(builder: flatbuffers.Builder, string: str):
@@ -25,7 +35,7 @@ def BuildAttrString(builder: flatbuffers.Builder, string: str):
 
 def BuildAttrVector(builder: flatbuffers.Builder, attr: str ,vector: list, Value_Type: type = float):   
     '''Creates a buffer for Vectors by passing the name of the attribute as a string'''
-    getattr(FontInfo, StartAttrVector(attr))(builder, len(vector))
+    getattr(FontInfo, StartAttrVector(attr))(builder, len(vector)) # Fontinfo.StartAttrVector()
     for index in reversed(range(0, len(vector))):
         if Value_Type == float:
             builder.PrependFloat32(vector[index])
@@ -33,14 +43,14 @@ def BuildAttrVector(builder: flatbuffers.Builder, attr: str ,vector: list, Value
             builder.PrependInt32(vector[index])
         if Value_Type == bool:
             builder.PrependBool(vector[index])
+
+
+            
     return builder.EndVector()
-
-
-
 
 def GetAttrReference(builder: flatbuffers.Builder, ufo: Font) -> dict: 
     '''
-    Creates a dictionary  that contains references for each data type that needs the buffer
+    Creates a dict that contains references for each data type that needs the buffer
     Includes a for-loop to generate a reference for the buffer-needed fields
     To avoid NestedError
     '''
@@ -56,6 +66,25 @@ def GetAttrReference(builder: flatbuffers.Builder, ufo: Font) -> dict:
             if type(attribute_value) == list:
                 if type(attribute_value[0]) in [int, float]: # have to discuss type conversions
                     attr_dict[attr] = BuildAttrVector(builder, attr, attribute_value)
+                
+                else:
+                    if attr == "OpenTypeNameRecords":
+                        OpenTypeNameRecord_refs = []
+                        if ufo.info.openTypeNameRecords:
+                            for i in range(len(ufo.info.openTypeNameRecords)):
+                                OpenTypeNameRecord_string = builder.CreateString(ufo.info.openTypeNameRecords[i].string)
+                                OpenTypeNameRecord.Start(builder)
+                                OpenTypeNameRecord.AddEncodingID(ufo.info.openTypeNameRecords[i].encodingID)
+                                OpenTypeNameRecord.AddLanguageID(ufo.info.openTypeNameRecords[i].languageID)
+                                OpenTypeNameRecord.AddPlatformID(ufo.info.openTypeNameRecords[i].platformID)
+                                OpenTypeNameRecord.AddNameID(ufo.info._openTypeNameRecords[i].nameID)
+                                OpenTypeNameRecord.AddString(OpenTypeNameRecord_string)
+                                OpenTypeNameRecord_refs[i] = OpenTypeNameRecord.End(builder)
+
+                            FontInfo.StartOpenTypeNameRecordsVector(builder, len(ufo.info.openTypeNameRecords))
+                            for i in reversed(range(len(ufo.info.openTypeNameRecords))):
+                                builder.PrependUOffsetTRelative(OpenTypeNameRecord_refs[i])
+                            attr_dict[attr] = builder.EndVector()
             
             if type(attribute_value) == object:
                 pass
@@ -82,13 +111,14 @@ def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font, attr_dict: dict):
                 if type(attribute_value) in NON_SCALARS: # can be emplemented just with an "else"!
                     getattr(FontInfo, AddAttr(attr))(builder, attr_dict[attr])
                 
-                # TODO other types
 
+
+                # TODO other types
+    
+    
     flat_ufo_info = FontInfo.End(builder)
     builder.Finish(flat_ufo_info)
-    return builder.Output()
-
-    
+    return builder.Output()   
 
 def main():
     '''
@@ -105,7 +135,7 @@ def main():
     # Building the buffer by passing the references
     buf = BuildUfoBuffer(builder, ufo, attr_dict)
 
-    with open("ufoff.bin", "wb") as outfile:
+    with open("ufoff.bin", "wb") as     outfile:
         outfile.write(buf)
 
 
