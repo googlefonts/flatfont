@@ -73,7 +73,6 @@ def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font):
                 attr_dict[attr] = BuildAttrVector(builder, attr, info_dict[attr])
                 continue
                 
- 
         if attr == "OpenTypeNameRecords":
             OpenTypeNameRecord_refs = []
             for index in range(len(info_dict[attr])):
@@ -114,16 +113,7 @@ def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font):
     FontInfo.Start(builder)    
     for attr in info_dict:
         if not info_dict[attr]: continue
-        # Writing scalar fields: (Other option: just use np.isscalar()!)
-        # Seeking an alternative to inclusde IntEnum in SCALARS without using "issubclass"
-        print(attr, info_dict[attr])
-        if type(info_dict[attr]) in SCALARS or issubclass(type(info_dict[attr]), IntEnum): 
-            getattr(FontInfo, AddAttr(attr))(builder, info_dict[attr])
-
-        # writing non-scalar fields:
-        if type(info_dict[attr]) in NON_SCALARS or attr in ["openTypeGaspRangeRecords", "OpenTypeNameRecords"]: # can be emplemented just with an "else"!
-            getattr(FontInfo, AddAttr(attr))(builder, attr_dict[attr])
-    
+        getattr(FontInfo, AddAttr(attr))(builder, attr_dict[attr])
     flat_ufo_info = FontInfo.End(builder)
     builder.Finish(flat_ufo_info)
     return builder.Output()   
@@ -135,12 +125,10 @@ def main():
     flatc --json --raw-binary ../schemas/ufo/fontinfo.fbs -- ufoff.bin    
     '''
     ufo = Font.open("../../OswaldFont/legacy/3.0/Roman/400/src/Oswald--400.ufo")
-    #ufo = Font.open("../../amstelvar/sources/Roman/Amstelvar-Roman-opsz14-wght100-wdth100.ufo ")
     builder = flatbuffers.Builder(0)
 
     # Building the buffer by passing the references
     buf = BuildUfoBuffer(builder, ufo)
-    print(buf)
     with open("ufoff.bin", "wb") as     outfile:
         outfile.write(buf)
 
