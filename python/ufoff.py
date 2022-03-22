@@ -1,5 +1,6 @@
 
 from ufoLib2 import Font
+from ufoLib2.converters import unstructure
 import flatbuffers
 from FlatFont.Ufo import FontInfo
 from FlatFont.Ufo import OpenTypeNameRecord
@@ -51,62 +52,57 @@ def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font):
     Includes a for-loop to generate a reference for the buffer-needed fields
     To avoid NestedError
     '''
-    
     attr_dict = dict()
     # A for-loop to create a reference to all fields which needs the buffer to be created for avoiding NestedError
-    for attr in dir(ufo.info):
-        attribute_value = getattr(ufo.info, attr) 
+    info_dict = unstructure(ufo.info)
+    for attr in info_dict:
+        if type(info_dict[attr]) in SCALARS:
+            attr_dict[attr] = info_dict[attr]
 
-        if attr[0] != "_" and attribute_value: # put "or True" the "attribute_value" for adding empty list or None_type
-            if type(attribute_value) == str: # How about writing a BuildAttr Func
-                attr_dict[attr] = BuildAttrString(builder, attribute_value)
+        elif type(info_dict[attr]) == str: # How about writing a BuildAttr Func
+            attr_dict[attr] = BuildAttrString(builder, info_dict[attr])
 
-            if type(attribute_value) == list:
-                if type(attribute_value[0]) in [int, float]: # have to discuss type conversions
-                    attr_dict[attr] = BuildAttrVector(builder, attr, attribute_value)
+        elif type(info_dict[attr]) == list: 
+            if not info_dict[attr]:
+                continue
+
+            if type(info_dict[attr][0]) in [int, float]: # have to discuss type conversions
+                attr_dict[attr] = BuildAttrVector(builder, attr, info_dict[attr])
                 
-                else:
-                    if attr == "OpenTypeNameRecords":
-                        OpenTypeNameRecord_refs = []
-                        if ufo.info.openTypeNameRecords:
-                            for i in range(len(ufo.info.openTypeNameRecords)):
-                                OpenTypeNameRecord_string = builder.CreateString(ufo.info.openTypeNameRecords[i].string)
-                                OpenTypeNameRecord.Start(builder)
-                                OpenTypeNameRecord.AddEncodingID(ufo.info.openTypeNameRecords[i].encodingID)
-                                OpenTypeNameRecord.AddLanguageID(ufo.info.openTypeNameRecords[i].languageID)
-                                OpenTypeNameRecord.AddPlatformID(ufo.info.openTypeNameRecords[i].platformID)
-                                OpenTypeNameRecord.AddNameID(ufo.info._openTypeNameRecords[i].nameID)
-                                OpenTypeNameRecord.AddString(OpenTypeNameRecord_string)
-                                OpenTypeNameRecord_refs[i] = OpenTypeNameRecord.End(builder)
+            else:
+                if attr == "OpenTypeNameRecords":
+                    OpenTypeNameRecord_refs = []
+                    for i in range(len(ufo.info.openTypeNameRecords)):
+                        OpenTypeNameRecord_string = builder.CreateString(ufo.info.openTypeNameRecords[i].string)
+                        OpenTypeNameRecord.Start(builder)
+                        OpenTypeNameRecord.AddEncodingID(ufo.info.openTypeNameRecords[i].encodingID)
+                        OpenTypeNameRecord.AddLanguageID(ufo.info.openTypeNameRecords[i].languageID)
+                        OpenTypeNameRecord.AddPlatformID(ufo.info.openTypeNameRecords[i].platformID)
+                        OpenTypeNameRecord.AddNameID(ufo.info._openTypeNameRecords[i].nameID)
+                        OpenTypeNameRecord.AddString(OpenTypeNameRecord_string)
+                        OpenTypeNameRecord_refs[i] = OpenTypeNameRecord.End(builder)
 
-                            FontInfo.StartOpenTypeNameRecordsVector(builder, len(ufo.info.openTypeNameRecords))
-                            for i in reversed(range(len(ufo.info.openTypeNameRecords))):
-                                builder.PrependUOffsetTRelative(OpenTypeNameRecord_refs[i])
-                            attr_dict[attr] = builder.EndVector()
-            
-            if type(attribute_value) == object:
-                pass
+                    FontInfo.StartOpenTypeNameRecordsVector(builder, len(ufo.info.openTypeNameRecords))
+                    for i in reversed(range(len(ufo.info.openTypeNameRecords))):
+                        builder.PrependUOffsetTRelative(OpenTypeNameRecord_refs[i])
+                    attr_dict[attr] = builder.EndVector()
 
             # TODO other nested references
     
     '''Building the buffer with all scalar types and a reference for non-scalar types'''
     FontInfo.Start(builder)    
-    for attr in dir(ufo.info):
-        attribute_value = getattr(ufo.info, attr)
+    for attr in info_dict:
+        if not info_dict[attr]: continue
+        # Writing scalar fields: (Other option: just use np.isscalar()!)
+        # Seeking an alternative to inclusde IntEnum in SCALARS without using "issubclass"
+        if type(info_dict[attr]) in SCALARS or issubclass(type(info_dict[attr]), IntEnum): 
+            getattr(FontInfo, AddAttr(attr))(builder, info_dict[attr])
 
-        if attr[0] != "_" and attribute_value: # Avoiding private fields and "__" functions (Double-check!)
-            if attribute_value: # Check if the field exists
+        # writing non-scalar fields:
+        if type(info_dict[attr]) in NON_SCALARS: # can be emplemented just with an "else"!
+            getattr(FontInfo, AddAttr(attr))(builder, attr_dict[attr])
 
-                # Writing scalar fields: (Other option: just use np.isscalar()!)
-                # Seeking an alternative to inclusde IntEnum in SCALARS without using "issubclass"
-                if type(attribute_value) in SCALARS or issubclass(type(attribute_value), IntEnum): 
-                    getattr(FontInfo, AddAttr(attr))(builder, attribute_value)
-
-                # writing non-scalar fields:
-                if type(attribute_value) in NON_SCALARS: # can be emplemented just with an "else"!
-                    getattr(FontInfo, AddAttr(attr))(builder, attr_dict[attr])
-
-                # TODO other types
+            # TODO other types
     
     flat_ufo_info = FontInfo.End(builder)
     builder.Finish(flat_ufo_info)
@@ -118,7 +114,6 @@ def main():
     for JSON conversion, execute:
     flatc --json --raw-binary -o json ../schemas/ufo/fontinfo.fbs -- ufoff.bin    
     '''
-
     ufo = Font.open("../../OswaldFont/legacy/3.0/Roman/400/src/Oswald--400.ufo")
     builder = flatbuffers.Builder(0)
 
