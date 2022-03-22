@@ -4,6 +4,7 @@ from ufoLib2.converters import unstructure
 import flatbuffers
 from FlatFont.Ufo import FontInfo
 from FlatFont.Ufo import OpenTypeNameRecord
+from FlatFont.Ufo import OpenTypeGaspRangeRecord
 #from FlatFont.Ufo import 
 from enum import IntEnum
 
@@ -56,36 +57,64 @@ def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font):
     # A for-loop to create a reference to all fields which needs the buffer to be created for avoiding NestedError
     info_dict = unstructure(ufo.info)
     for attr in info_dict:
+
         if type(info_dict[attr]) in SCALARS:
             attr_dict[attr] = info_dict[attr]
+            continue
 
-        elif type(info_dict[attr]) == str: # How about writing a BuildAttr Func
+        if type(info_dict[attr]) == str: # How about writing a BuildAttr Func
             attr_dict[attr] = BuildAttrString(builder, info_dict[attr])
+            continue
 
-        elif type(info_dict[attr]) == list: 
+        if type(info_dict[attr]) == list: # should I create reference for empty list?
             if not info_dict[attr]:
                 continue
 
             if type(info_dict[attr][0]) in [int, float]: # have to discuss type conversions
                 attr_dict[attr] = BuildAttrVector(builder, attr, info_dict[attr])
+                continue
                 
-            else:
-                if attr == "OpenTypeNameRecords":
-                    OpenTypeNameRecord_refs = []
-                    for i in range(len(ufo.info.openTypeNameRecords)):
-                        OpenTypeNameRecord_string = builder.CreateString(ufo.info.openTypeNameRecords[i].string)
-                        OpenTypeNameRecord.Start(builder)
-                        OpenTypeNameRecord.AddEncodingID(ufo.info.openTypeNameRecords[i].encodingID)
-                        OpenTypeNameRecord.AddLanguageID(ufo.info.openTypeNameRecords[i].languageID)
-                        OpenTypeNameRecord.AddPlatformID(ufo.info.openTypeNameRecords[i].platformID)
-                        OpenTypeNameRecord.AddNameID(ufo.info._openTypeNameRecords[i].nameID)
-                        OpenTypeNameRecord.AddString(OpenTypeNameRecord_string)
-                        OpenTypeNameRecord_refs[i] = OpenTypeNameRecord.End(builder)
+ 
+        if attr == "OpenTypeNameRecords":
+            OpenTypeNameRecord_refs = []
+            for index in range(len(info_dict[attr])):
+                OpenTypeNameRecord_string = builder.CreateString(info_dict[attr][index].string)
+                OpenTypeNameRecord.Start(builder)
+                OpenTypeNameRecord.AddNameID(builder, info_dict[attr][index].nameID)
+                OpenTypeNameRecord.AddPlatformID(builder, info_dict[attr][index].platformID)
+                OpenTypeNameRecord.AddEncodingID(builder, info_dict[attr][index].encodingID)
+                OpenTypeNameRecord.AddLanguageID(builder, info_dict[attr][index].languageID)
+                OpenTypeNameRecord.AddString(builder, OpenTypeNameRecord_string)
+                OpenTypeNameRecord_refs.append(OpenTypeNameRecord.End(builder))
 
-                    FontInfo.StartOpenTypeNameRecordsVector(builder, len(ufo.info.openTypeNameRecords))
-                    for i in reversed(range(len(ufo.info.openTypeNameRecords))):
-                        builder.PrependUOffsetTRelative(OpenTypeNameRecord_refs[i])
-                    attr_dict[attr] = builder.EndVector()
+            FontInfo.StartOpenTypeNameRecordsVector(builder, len(info_dict[attr]))
+            for index in reversed(range(len(info_dict[attr]))):
+                builder.PrependUOffsetTRelative(OpenTypeNameRecord_refs[index])
+            attr_dict[attr] = builder.EndVector()
+            continue
+
+        if attr == "openTypeGaspRangeRecords":
+            openTypeGaspRangeRecord_refs = []
+            for index in range(len(info_dict[attr])):
+                OpenTypeGaspRangeRecord.StartRangeGaspBehaviorVector(builder, len(info_dict[attr][index].rangeGaspBehavior))
+                for j in reversed(range(info_dict[attr][index].rangeGaspBehavior)):
+                    builder.PrependUint32(info_dict[attr][index].rangeGaspBehavior[j])
+                rangeGaspBehaviorVector = builder.EndVector()
+                OpenTypeGaspRangeRecord.start(builder)
+                OpenTypeGaspRangeRecord.AddRangeMaxPPEM(builder, info_dict[attr][index].rangeMaxPPEM)
+                OpenTypeGaspRangeRecord.AddRangeGaspBehavior(builder, rangeGaspBehaviorVector)
+                openTypeGaspRangeRecord_refs.append(OpenTypeGaspRangeRecord.End(builder))
+            
+            FontInfo.StartOpenTypeGaspRangeRecordsVector(builder, len(info_dict[attr]))
+            for index in reversed(range(len(info_dict[attr]))):
+                builder.PrependUOffsetTRelative(openTypeGaspRangeRecord_refs[index])
+            attr_dict[attr] = builder.EndVector()
+            continue
+        
+            
+
+
+
 
             # TODO other nested references
     
