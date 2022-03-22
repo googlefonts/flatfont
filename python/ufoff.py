@@ -43,17 +43,15 @@ def BuildAttrVector(builder: flatbuffers.Builder, attr: str ,vector: list, Value
             builder.PrependInt32(vector[index])
         if Value_Type == bool:
             builder.PrependBool(vector[index])
-
-
-            
     return builder.EndVector()
 
-def GetAttrReference(builder: flatbuffers.Builder, ufo: Font) -> dict: 
+def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font):
     '''
     Creates a dict that contains references for each data type that needs the buffer
     Includes a for-loop to generate a reference for the buffer-needed fields
     To avoid NestedError
     '''
+    
     attr_dict = dict()
     # A for-loop to create a reference to all fields which needs the buffer to be created for avoiding NestedError
     for attr in dir(ufo.info):
@@ -91,9 +89,6 @@ def GetAttrReference(builder: flatbuffers.Builder, ufo: Font) -> dict:
 
             # TODO other nested references
     
-    return attr_dict
-
-def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font, attr_dict: dict):
     '''Building the buffer with all scalar types and a reference for non-scalar types'''
     FontInfo.Start(builder)    
     for attr in dir(ufo.info):
@@ -110,11 +105,8 @@ def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font, attr_dict: dict):
                 # writing non-scalar fields:
                 if type(attribute_value) in NON_SCALARS: # can be emplemented just with an "else"!
                     getattr(FontInfo, AddAttr(attr))(builder, attr_dict[attr])
-                
-
 
                 # TODO other types
-    
     
     flat_ufo_info = FontInfo.End(builder)
     builder.Finish(flat_ufo_info)
@@ -127,21 +119,14 @@ def main():
     flatc --json --raw-binary -o json ../schemas/ufo/fontinfo.fbs -- ufoff.bin    
     '''
 
-    ufo = Font.open("../OswaldFont/legacy/3.0/Roman/400/src/Oswald--400.ufo")
+    ufo = Font.open("../../OswaldFont/legacy/3.0/Roman/400/src/Oswald--400.ufo")
     builder = flatbuffers.Builder(0)
 
-    attr_dict = GetAttrReference(builder, ufo)
-
     # Building the buffer by passing the references
-    buf = BuildUfoBuffer(builder, ufo, attr_dict)
+    buf = BuildUfoBuffer(builder, ufo)
 
     with open("ufoff.bin", "wb") as     outfile:
         outfile.write(buf)
 
-
 if __name__ == "__main__":
     main()
-
-
-
-
