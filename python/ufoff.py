@@ -22,7 +22,7 @@ def StartAttrVector(attr: str):
     '''
     return "Start" + Capital(attr) + "Vector"
 
-def AddAttr(attr: str): # how about make it a subclass to str, add a method with or without @property: attr.AddAttr or attr.StartAttrVector
+def AddAttr(attr: str): 
     '''
     Simplifies calling buffer functions
     Returns a string representing the buffer function 
@@ -61,7 +61,7 @@ def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font):
             attr_dict[attr] = info_dict[attr]
             continue
 
-        if type(info_dict[attr]) == str: # How about writing a BuildAttr Func
+        if type(info_dict[attr]) == str: 
             attr_dict[attr] = BuildAttrString(builder, info_dict[attr])
             continue
 
@@ -129,7 +129,7 @@ def main():
 
     # Building the buffer by passing the references
     buf = BuildUfoBuffer(builder, ufo)
-    with open("ufoff.bin", "wb") as     outfile:
+    with open("ufoff.bin", "wb") as outfile:
         outfile.write(buf)
 
 if __name__ == "__main__":
