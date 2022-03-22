@@ -5,7 +5,6 @@ import flatbuffers
 from FlatFont.Ufo import FontInfo
 from FlatFont.Ufo import OpenTypeNameRecord
 from FlatFont.Ufo import OpenTypeGaspRangeRecord
-#from FlatFont.Ufo import 
 from enum import IntEnum
 
 SCALARS = [int, float, bool] # Other scalars needed # Enum needed
@@ -110,13 +109,6 @@ def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font):
                 builder.PrependUOffsetTRelative(openTypeGaspRangeRecord_refs[index])
             attr_dict[attr] = builder.EndVector()
             continue
-        
-            
-
-
-
-
-            # TODO other nested references
     
     '''Building the buffer with all scalar types and a reference for non-scalar types'''
     FontInfo.Start(builder)    
@@ -124,14 +116,13 @@ def BuildUfoBuffer(builder: flatbuffers.Builder, ufo: Font):
         if not info_dict[attr]: continue
         # Writing scalar fields: (Other option: just use np.isscalar()!)
         # Seeking an alternative to inclusde IntEnum in SCALARS without using "issubclass"
+        print(attr, info_dict[attr])
         if type(info_dict[attr]) in SCALARS or issubclass(type(info_dict[attr]), IntEnum): 
             getattr(FontInfo, AddAttr(attr))(builder, info_dict[attr])
 
         # writing non-scalar fields:
-        if type(info_dict[attr]) in NON_SCALARS: # can be emplemented just with an "else"!
+        if type(info_dict[attr]) in NON_SCALARS or attr in ["openTypeGaspRangeRecords", "OpenTypeNameRecords"]: # can be emplemented just with an "else"!
             getattr(FontInfo, AddAttr(attr))(builder, attr_dict[attr])
-
-            # TODO other types
     
     flat_ufo_info = FontInfo.End(builder)
     builder.Finish(flat_ufo_info)
@@ -141,14 +132,15 @@ def main():
     '''
     Converts UFO (From UfoLib2.Font) to flatbuffer binary
     for JSON conversion, execute:
-    flatc --json --raw-binary -o json ../schemas/ufo/fontinfo.fbs -- ufoff.bin    
+    flatc --json --raw-binary ../schemas/ufo/fontinfo.fbs -- ufoff.bin    
     '''
     ufo = Font.open("../../OswaldFont/legacy/3.0/Roman/400/src/Oswald--400.ufo")
+    #ufo = Font.open("../../amstelvar/sources/Roman/Amstelvar-Roman-opsz14-wght100-wdth100.ufo ")
     builder = flatbuffers.Builder(0)
 
     # Building the buffer by passing the references
     buf = BuildUfoBuffer(builder, ufo)
-
+    print(buf)
     with open("ufoff.bin", "wb") as     outfile:
         outfile.write(buf)
 
