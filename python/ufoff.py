@@ -4,10 +4,7 @@ import flatbuffers
 from FlatFont.Ufo import FontInfo
 from FlatFont.Ufo import OpenTypeNameRecord
 from FlatFont.Ufo import OpenTypeGaspRangeRecord
-
-SCALARS = [int, float, bool]  # Other scalars needed # Enum needed
-NON_SCALARS = [str, list]  # Other none-scalars needed
-
+SCALARS = [int, float, bool]  # Other scalars needed
 
 def capital(string: str):  # seek equivalent buit-in function
     """Capitalizes the string without affecting other characters"""
