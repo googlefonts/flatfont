@@ -1,10 +1,16 @@
 from ufoLib2 import Font
 from ufoLib2.converters import unstructure
 import flatbuffers
-from FlatFont.Ufo import FontInfo
-from FlatFont.Ufo import OpenTypeNameRecord
-from FlatFont.Ufo import OpenTypeGaspRangeRecord
+from FlatFont.Ufo import (
+    FontInfo,
+    OpenTypeNameRecord,
+    OpenTypeGaspRangeRecord,
+    Guideline,
+    Glyph,
+)
+
 SCALARS = [int, float, bool]  # Other scalars needed
+
 
 def capital(string: str):  # seek equivalent buit-in function
     """Capitalizes the string without affecting other characters"""
@@ -26,7 +32,25 @@ def build_attr_vector(
     return builder.EndVector()
 
 
-def build_ufo_buffer(builder: flatbuffers.Builder, ufo: Font):
+def build_guideline_vector(builder: flatbuffers.Builder, guideline_vector: list):
+    """Builds a buffer for vector if Guidelines"""
+    guideline_refs = []
+    for index in range(len(guideline_vector)):
+        guideline_name = builder.CreateString(guideline_vector[index].name)
+        guideline_color = builder.CreateString(guideline_vector[index].color)
+        guideline_identifier = builder.CreateString(guideline_vector[index].identifier)
+        Guideline.Start(builder)
+        Guideline.AddX(builder, guideline_vector[index].x)
+        Guideline.AddY(builder, guideline_vector[index].y)
+        Guideline.AddAngle(builder, guideline_vector[index].angle)
+        Guideline.AddName(builder, guideline_name)
+        Guideline.AddColor(builder, guideline_color)
+        Guideline.AddIdentifier(builder, guideline_identifier)
+        guideline_refs.append(Guideline.End(builder))
+    return guideline_refs
+
+
+def build_ufo_info_buffer(builder: flatbuffers.Builder, ufo: Font):
     """
     Creates a dict that contains references for each data type that needs the buffer
     Includes a for-loop to generate a reference for the buffer-needed fields
@@ -108,6 +132,14 @@ def build_ufo_buffer(builder: flatbuffers.Builder, ufo: Font):
             attr_dict[attr] = builder.EndVector()
             continue
 
+        if attr == "guidelines":
+            guideline_refs = build_guideline_vector(builder, info_dict[attr])
+            FontInfo.StartGuidelinesVector(builder, len(info_dict[attr]))
+            for index in reversed(range(len(info_dict[attr]))):
+                builder.PrependUOffsetTRelative(guideline_refs[index])
+            attr_dict[attr] = builder.EndVector()
+            continue
+
     """Building the buffer with all scalar types and a reference for non-scalar types"""
     FontInfo.Start(builder)
     for attr in info_dict:
@@ -129,9 +161,9 @@ def main():
     builder = flatbuffers.Builder(0)
 
     # Building the buffer by passing the references
-    buf = build_ufo_buffer(builder, ufo)
+    buf_ufo_info = build_ufo_info_buffer(builder, ufo)
     with open("ufoff.bin", "wb") as outfile:
-        outfile.write(buf)
+        outfile.write(buf_ufo_info)
 
 
 if __name__ == "__main__":
