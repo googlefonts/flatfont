@@ -1,0 +1,13 @@
+namespace FlatFont.Ufo;
+
+/// https://unifiedfontobject.org/versions/ufo3/metainfo.plist/
+table MetaInfo{
+    
+  /// https://unifiedfontobject.org/versions/ufo3/metainfo.plist/#specification
+  creator: string;
+  formatVersion: uint;
+  formatVersionMinor: uint;
+}
+
+
+root_type MetaInfo;
