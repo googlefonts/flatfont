@@ -151,18 +151,29 @@ def build_ufo_info_buffer(builder: flatbuffers.Builder, ufo: Font):
     return builder.Output()
 
 
+def build_ufo_glyph_buffer(builder: flatbuffers.Builder, ufo: Font):
+    attr_dict = dict()
+    # A for-loop to create a reference to all fields which needs the buffer to be created for avoiding NestedError
+    info_dict = unstructure(ufo.lib)
+
+
+
 def main():
     """
     Converts UFO (From UfoLib2.Font) to flatbuffer binary
     for JSON conversion, execute:
-    flatc --json --raw-binary ../schemas/ufo/fontinfo.fbs -- ufoff.bin
+    flatc --json --raw-binary -o ../target ../schemas/ufo/fontinfo.fbs -- ufoff.bin
     """
     ufo = Font.open("../../OswaldFont/legacy/3.0/Roman/400/src/Oswald--400.ufo")
     builder = flatbuffers.Builder(0)
 
     # Building the buffer by passing the references
     buf_ufo_info = build_ufo_info_buffer(builder, ufo)
-    with open("ufoff.bin", "wb") as outfile:
+
+
+
+
+    with open("../target/ufoff.bin", "wb") as outfile:
         outfile.write(buf_ufo_info)
 
 

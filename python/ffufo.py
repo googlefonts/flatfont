@@ -2,8 +2,7 @@
 from ufoLib2 import Font
 from ufoLib2.converters import structure
 import flatbuffers
-from FlatFont.Ufo import FontInfo, Guideline
-from python.FlatFont.Ufo.OpenTypeNameRecord import OpenTypeNameRecord
+from FlatFont.Ufo import FontInfo
 SCALARS = [int, float, bool] # Other scalars needed # Enum needed
 NON_SCALARS = [str, list] # Other none-scalars needed
 
@@ -13,7 +12,7 @@ NON_SCALARS = [str, list] # Other none-scalars needed
 
 
 def main():
-    with open("ufoff.bin", "rb") as infile:
+    with open("../target/ufoff.bin", "rb") as infile:
         buf = infile.read()
     buf = bytearray(buf)
     ufo_info_buffer = FontInfo.FontInfo.GetRootAs(buf, 0)
@@ -209,10 +208,10 @@ def test():
 
 
 
-
-    ufo_info = structure(ufo_info_dict, Font)
-    #for key in ufo_info_dict:
-    #    print(key, ufo_info_dict[key])
+    
+    #ufo_info = structure(ufo_info_dict, Font)
+    for key in ufo_info_dict:
+        print(key, ufo_info_dict[key])
 
 if __name__ == "__main__":
     #main()
