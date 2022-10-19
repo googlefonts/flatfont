@@ -11,4 +11,4 @@ proc-macro = true
 [dependencies]
 syn = { version = "1.0.81", features = ["full", "extra-traits"] }
 quote = "1.0.10"
-flatbuffers = "2.0.0"
+flatbuffers = "22.9.29"
